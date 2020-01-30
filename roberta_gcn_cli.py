@@ -10,7 +10,7 @@ from tag_mspan_robert_gcn.roberta_batch_gen_tmspan import DropBatchGen as TDropB
 from tag_mspan_robert_gcn.tag_mspan_roberta_gcn import NumericallyAugmentedBertNet as TNumericallyAugmentedBertNet
 from datetime import datetime
 from tools.utils import create_logger, set_environment
-from pytorch_transformers import RobertaTokenizer, RobertaModel
+from transformers import AlbertTokenizer, AlbertModel
 
 
 parser = argparse.ArgumentParser("Bert training task.")
@@ -24,7 +24,7 @@ args = parser.parse_args()
 if not os.path.exists(args.save_dir):
     os.mkdir(args.save_dir)
 
-tokenizer = RobertaTokenizer.from_pretrained(args.roberta_model)
+tokenizer = AlbertTokenizer.from_pretrained(args.roberta_model)
 
 args.cuda = args.gpu_num > 0
 args_path = os.path.join(args.save_dir, "args.json")
@@ -50,7 +50,7 @@ def main():
     logger.info("Num update steps {}!".format(num_train_steps))
 
     logger.info("Build bert model.")
-    bert_model = RobertaModel.from_pretrained(args.roberta_model)
+    bert_model = AlbertModel.from_pretrained(args.roberta_model)
 
     logger.info("Build Drop model.")
     if not args.tag_mspan:

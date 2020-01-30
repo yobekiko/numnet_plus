@@ -139,8 +139,8 @@ def cached_path(file_path):
 IGNORED_TOKENS = {'a', 'an', 'the'}
 MULTI_SPAN = 'multi_span'
 STRIPPED_CHARACTERS = string.punctuation + ''.join([u"‘", u"’", u"´", u"`", "_"])
-USTRIPPED_CHARACTERS = ''.join([u"Ġ"])
-START_CHAR = u"Ġ"
+USTRIPPED_CHARACTERS = ''.join(['▁'])
+START_CHAR = '▁'
 
 def whitespace_tokenize(text):
     """Runs basic whitespace cleaning and splitting on a piece of text."""
@@ -218,7 +218,7 @@ class DropReader(object):
             question_number_indices, question_number_len, numbers_in_question, len(question_tokens)
         )
 
-        qp_tokens = ["<s>"] + question_tokens + ["</s>"] + passage_tokens
+        qp_tokens = [self._tokenizer.cls_token] + question_tokens + [self._tokenizer.sep_token] + passage_tokens
         qp_wordpiece_mask = [1] + question_wordpiece_mask + [1] + passage_wordpiece_mask
         q_len = len(question_tokens)
         if len(qp_tokens) > self.max_pieces - 1:
@@ -229,7 +229,7 @@ class DropReader(object):
             number_indices, number_len, numbers_in_passage = clipped_passage_num(number_indices, number_len,
                                                                                  numbers_in_passage, plen)
             qp_wordpiece_mask = qp_wordpiece_mask[:self.max_pieces - 1]
-        qp_tokens += ["</s>"]
+        qp_tokens += [self._tokenizer.sep_token]
         qp_wordpiece_mask += [1]
 
         answer_type: str = None

@@ -13,7 +13,7 @@ class DropBatchGen(object):
         self.padding_idx = padding_idx
         self.is_train = data_mode == "train"
         self.vocab_size = len(tokenizer)
-        dpath = "tmspan_cached_roberta_{}.pkl".format(data_mode)
+        dpath = "tmspan_cached_albert_{}.pkl".format(data_mode)
         with open(os.path.join(args.data_dir, dpath), "rb") as f:
             print("Load data from {}.".format(dpath))
             data = pickle.load(f)
@@ -22,8 +22,8 @@ class DropBatchGen(object):
         for item in data:
             question_tokens = tokenizer.convert_tokens_to_ids(item["question_tokens"])
             passage_tokens = tokenizer.convert_tokens_to_ids(item["passage_tokens"])
-            question_passage_tokens = [ Token(text=item[0], idx=item[1][0], edx=item[1][1] ) for item in zip(item["question_passage_tokens"],
-                    [(0,0)] + item["question_token_offsets"] + [(0,0)]+ item["passage_token_offsets"] + [(0, 0)])]
+            question_passage_tokens = [Token(text=token_text, idx=idx, edx=edx) for token_text, (idx, edx) in zip(
+                item["question_passage_tokens"], [(0, 0)] + item["question_token_offsets"] + [(0, 0)]+ item["passage_token_offsets"] + [(0, 0)])]
             item["question_passage_tokens"] = question_passage_tokens
             all_data.append((question_tokens, passage_tokens, item))
 
